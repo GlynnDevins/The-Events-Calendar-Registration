@@ -29,6 +29,10 @@ get_header();
     </div>
 </div>
 <div id="secondary">
-    <?php EventsCalendarGravityFormsRegistration::registration_conditionals(); ?>
+    <?php
+    if(get_option('tecr_location') and 'sidebar' == get_option('tecr_location')) {
+      EventsCalendarGravityFormsRegistration::registration_conditionals();
+    }
+    ?>
 </div>
     <?php get_footer(); ?>

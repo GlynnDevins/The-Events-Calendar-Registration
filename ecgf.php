@@ -13,10 +13,16 @@
 class EventsCalendarGravityFormsRegistration {
 
   public function __construct() {
-    add_action( 'widgets_init', __CLASS__.'::register_events_sidebar' );
-    add_action('admin_notices', __CLASS__.'::admin_notice');
+
+    add_action( 'admin_init',     __CLASS__.'::admin_init' );
+    add_action('admin_notices',   __CLASS__.'::admin_notice');
+    add_action('admin_menu',      __CLASS__.'::admin_menu');
+    add_action( 'widgets_init',   __CLASS__.'::register_events_sidebar' );
+
+    add_filter('tribe_events_template', __CLASS__.'::template_filter' );
+
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
-    add_filter('tribe_events_template', __CLASS__.'::template_filter');
+
   }
 
   /**
@@ -47,7 +53,104 @@ class EventsCalendarGravityFormsRegistration {
     endif;
   }
 
+  // Admin init - setup plugin settings page
+  public static function admin_init() {
 
+//    add_settings_section(
+//      'eg_setting_section',
+//      'Example settings section in reading',
+//      __CLASS__.'::eg_setting_section_callback_function',
+//      'reading'
+//    );
+//    add_settings_field(
+//      'eg_setting_name',
+//      'Example setting Name',
+//      __CLASS__.'::eg_setting_callback_function',
+//      'reading',
+//      'eg_setting_section'
+//    );
+//    register_setting( 'reading', 'eg_setting_name' );
+
+
+//    apply_filters( 'tribe_settings_admin_slug', 'tribe-events-calendar' );
+
+    if(isset($_POST['events-calendar-updated']) and $_POST['events-calendar-updated'] == "submitted") {
+      static::updateSettings();
+    }
+
+  }
+
+  public static function admin_menu() {
+
+    $tribe_settings = TribeSettings::instance();
+
+    add_submenu_page(
+      'edit.php?post_type='.TribeEvents::POSTTYPE,
+      __( 'The Events Calendar Registration Settings', 'tribe-events-calendar'),
+      __('Registration Settings', 'tribe-events-calendar'),
+      $tribe_settings->requiredCap,
+      $tribe_settings->adminSlug.'-registration',
+      array( __CLASS__, 'settingsPage' )
+    );
+
+
+  }
+  public function settingsPage() {
+
+    $option = get_option('tecr_location');
+    $options = array(
+      'sidebar' => "Sidebar",
+      'maincontent' => "Main Content"
+    );
+    $selected = 'selected="selected"';
+
+    ?>
+
+    <h3>The Events Calendar Registration Settings</h3>
+    <p>
+    <form method="post">
+      <label for="location">
+        Location for Registration Form:
+      </label>
+      <select name="location" autofocus>
+        <?php foreach($options as $key => $value): ?>
+          <option value="<?=$key; ?>" <?php if($key===$option) { echo $selected; } ?>><?=$value; ?></option>
+        <?php endforeach; ?>
+      </select>
+      <input type="hidden" name="events-calendar-updated" value="submitted"/>
+      <input type="submit"/>
+    </form>
+    </p>
+
+  <?php
+  }
+
+  public static function updateSettings() {
+
+    $currentSetting = get_option('tecr_location');
+    $newSetting = mysql_escape_string($_POST['location']);
+
+    if($currentSetting) {
+      if($newSetting === $currentSetting) {
+        return;
+      }
+      update_option('tecr_location', $newSetting);
+      return;
+    }
+
+    add_option('tecr_location', $newSetting);
+
+  }
+
+
+
+//
+//  public static function eg_setting_section_callback_function() {
+//    echo '<p>Intro text for our settings section</p>';
+//  }
+//  public static function eg_setting_callback_function() {
+//    echo '<input name="eg_setting_name" id="gv_thumbnails_insert_into_excerpt" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'eg_setting_name' ), false ) . ' /> Explanation text';
+//  }
 
   /**
    * Display Admin Notice if there are Issues with necessary plugins not being active
@@ -66,7 +169,6 @@ class EventsCalendarGravityFormsRegistration {
       echo '</div>';
     endif;
   }
-
 
   /**
    * Method called when this plugin is activated
@@ -100,7 +202,6 @@ class EventsCalendarGravityFormsRegistration {
     return $actions;
   }
 
-
   /**
    * Register Events Sidebar for Template
    *
@@ -116,9 +217,6 @@ class EventsCalendarGravityFormsRegistration {
       'after_title'   => '</h3>',
     ) );
   }
-
-
-
 
   /**
    * Check to see if a form exists in Gravity Forms

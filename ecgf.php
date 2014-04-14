@@ -16,6 +16,7 @@ class EventsCalendarGravityFormsRegistration {
     add_action( 'widgets_init', __CLASS__.'::register_events_sidebar' );
     add_action('admin_notices', __CLASS__.'::admin_notice');
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
+    add_filter('tribe_events_template', __CLASS__.'::template_filter');
   }
 
   /**
@@ -180,6 +181,20 @@ class EventsCalendarGravityFormsRegistration {
 
     endif;
   }
+
+  public static function template_filter($arg = '', $arg2 = '', $arg3 = '') {
+    $path = explode('/', $arg);
+    $file = end($path);
+    $pluginTemplate = dirname(__FILE__) . '/tribe-events/';
+    $defaultTemplate = $pluginTemplate . $file;
+    if(is_dir($pluginTemplate) and file_exists($defaultTemplate)) {
+      return $defaultTemplate;
+    }
+
+    return $arg;
+  }
+
+
 }
 
 $ecgf = new EventsCalendarGravityFormsRegistration();

@@ -175,11 +175,11 @@ class EventsCalendarGravityFormsRegistration {
    */
   public static function activate() {
     if(static::req_plugins_active() !== false) {
-      add_option( 'ecgf_activation_error', 'true' );
-      unset($_GET['action']);
+//      unset($_GET['action']);
       static::admin_notice();
       exit;
     }
+    static::generatePages();
   }
 
   /**
@@ -257,7 +257,7 @@ class EventsCalendarGravityFormsRegistration {
             <div id="event-registration-form">
             <?php
             // need to check to see if this function exists - else display "install plugin"
-            static::show_form('Event Registration'); // display the event registration form **requires the Events Calendar / Granvity Forms integration plugin.
+            static::show_form('Event Registration'); // display the event registration form **requires the Events Calendar / Gravity Forms integration plugin.
           else:
             // let the user know that registration time period has lapsed
             echo '<div class="notice">' . get_field('online_registration_expired_message') . '</div>';
@@ -290,6 +290,29 @@ class EventsCalendarGravityFormsRegistration {
     }
 
     return $arg;
+  }
+
+  // Dyamically Generate events page and thank you page
+  public static function generatePages() {
+    $page = get_page_by_path('events', OBJECT, 'page');
+    if(null === $page) {
+      wp_insert_post(array(
+        'name'        => 'events',
+        'post_title'  => 'Events',
+        'post_status' => 'publish',
+        'post_type'   => 'page'
+      ));
+    }
+    $page2 = get_page_by_path('events/thank-you', OBJECT, 'page');
+    if(null === $page2) {
+      wp_insert_post(array(
+        'name'        => 'events/thank-you',
+        'post_title'  => 'Thank you',
+        'post_status' => 'publish',
+        'post_type'   => 'page',
+        'post_parent' => $page->ID
+      ));
+    }
   }
 
 

@@ -107,14 +107,21 @@ class EventsCalendarGravityFormsRegistration {
       foreach($forms as $form){
         if(strtolower($form->title) == strtolower(static::$formTitle)) {
           $form_id = $form->id;
-          $entries = GFAPI::get_entries($form_id, array(
-            'field_filters' => array(
+
+          $entries = GFAPI::get_entries(
+            $form_id,
               array(
-                'key'     => '7',
-                'value'   => $post_id
+              'field_filters' => array(
+                array(
+                  'key'     => '7',
+                  'value'   => $post_id
+                )
               )
-            )
-          ));
+            ),
+            null,
+            array('offset' => '0', 'page_size' => '1000')
+          );
+
           header("Content-type: text/csv");
           header("Content-Disposition: attachment; filename=" . sanitize_title_with_dashes($entries[0]['6']) . ".csv");
           header("Pragma: no-cache");
@@ -499,7 +506,7 @@ class EventsCalendarGravityFormsRegistration {
             'type'        => 'page',
             'name'        => 'Default Confirmation',
             'pageId'      => $thankyouPage->ID,
-            'queryString' => 'eventID={post_id:6}'
+            'queryString' => 'eventID={post_id:7}'
           )
         ),
         'notifications'    => array(

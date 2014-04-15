@@ -23,6 +23,8 @@ class EventsCalendarGravityFormsRegistration {
 
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
 
+    include_once( 'acf.php' );
+
   }
 
   /**
@@ -180,6 +182,7 @@ class EventsCalendarGravityFormsRegistration {
       exit;
     }
     static::generatePages();
+    static::generateForm();
   }
 
   /**
@@ -313,6 +316,195 @@ class EventsCalendarGravityFormsRegistration {
         'post_parent' => $page->ID
       ));
     }
+  }
+  public static function generateForm() {
+
+    if(class_exists('GFAPI')) {
+
+      $form = array(
+        'labelPlacement'          => 'top_label',
+        'useCurrentUserAsAuthor'  => '1',
+        'title'                   => 'Event Registration TEST',
+        'descriptionPlacement'    => 'below',
+        'button'                  => array(
+          'type'  => 'text',
+          'text'  => 'Submit'
+        ),
+        'fields' => array(
+          array(
+            'id'          => '1',
+            'isRequired'  => '1',
+            'size'        => 'large',
+            'type'        => 'name',
+            'nameFormat'  => 'simple',
+            'label'       => 'First Name'
+          ),
+          array(
+            'id'          => '2',
+            'isRequired'  => '1',
+            'size'        => 'medium',
+            'type'        => 'name',
+            'nameFormat'  => 'simple',
+            'label'       => 'Last Name'
+          ),
+          array(
+            'id'          => '3',
+            'isRequired'  => '1',
+            'size'        => 'medium',
+            'type'        => 'email',
+            'label'       => 'Email'
+          ),
+          array(
+            'id'          => '4',
+            'isRequired'  => '1',
+            'size'        => 'medium',
+            'type'        => 'phone',
+            'phoneFormat' => 'standard',
+            'label'       => 'Phone'
+          ),
+          array(
+            'id'          => '7',
+            'isRequired'  => '1',
+            'size'        => 'medium',
+            'type'        => 'select',
+            'label'       => 'Number Attending',
+            'choices'     => array(
+              array(
+                'text'  => '1',
+                'value' => '1'
+              ),
+              array(
+                'text'  => '2',
+                'value' => '2'
+              ),
+              array(
+                'text'  => '3',
+                'value' => '3'
+              ),
+              array(
+                'text'  => '4',
+                'value' => '4'
+              ),
+              array(
+                'text'  => '5',
+                'value' => '5'
+              ),
+              array(
+                'text'  => '6',
+                'value' => '6'
+              ),
+              array(
+                'text'  => '7',
+                'value' => '7'
+              ),
+              array(
+                'text'  => '8',
+                'value' => '8'
+              )
+            )
+          ),
+          array(
+            'id'          => '8',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '{embed_post:post_title}',
+            'label'       => 'Event Name'
+          ),
+          array(
+            'id'          => '9',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '{custom_field:_EventStartDate}',
+            'label'       => 'Event Start Date'
+          ),
+          array(
+            'id'          => '10',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '{custom_field:_EventEndDate}',
+            'label'       => 'Event End Date'
+          ),
+          array(
+            'id'          => '11',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '{custom_field:_EventRecurrence}',
+            'label'       => 'Event Recurrence'
+          ),
+          array(
+            'id'          => '12',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '{custom_field:_EventAllDay}',
+            'label'       => 'All Day Event'
+          ),
+          'cssClass'        => 'contact-form-gfec-form',
+          'enableHoneypot'  => '1',
+          'confirmation'    => array(
+            array(
+              'id'        => '5316355c6c8c1',
+              'isDefault' => '1',
+              'type'      => 'page',
+              'name'      => 'Default Confirmation',
+              'pagId'     => '1240'
+            )
+          ),
+          'notification'    => array(
+            array(
+              'id'      => '5316355c6bcd6',
+              'to'      => '{admin_email}',
+              'name'    => 'Admin Notification',
+              'event'   => 'form_submission',
+              'toType'  => 'email',
+              'subject' => 'Arbor Glen Event RSVP for {Event Name:5} - {Event Date"6}',
+              'message' => '{all_fields}',
+              'bcc'     => 'webadmin@glynndevins.com',
+              'from'    => '{admin_email}'
+            ),
+            array(
+              'id'      => '53163750d13d3',
+              'to'      => '3',
+              'name'    => 'RSVP',
+              'event'   => 'form_submission',
+              'toType'  => 'field',
+              'subject' => 'Thank You for Registering for (Event Name:5} - {Event Date:6}',
+              'message' => '{all_fields}',
+              'from'    => '{admin_email}',
+              'fromName'=> get_bloginfo('name')
+            )
+          )
+        )
+      );
+
+      if(RGFormsModel::is_unique_title($form['title'])) {
+
+        $form_id = RGFormsModel::insert_form($form['title']);
+
+        $form["id"] = $form_id;
+
+        GFFormsModel::trim_form_meta_values($form);
+
+        if(isset($form['confirmations'])) {
+          $form['confirmations'] = GFExport::set_property_as_key($form['confirmations'], 'id');
+          $form['confirmations'] = GFFormsModel::trim_conditional_logic_values($form['confirmations'], $form);
+          GFFormsModel::update_form_meta($form_id, $form['confirmations'], 'confirmations');
+          unset($form['confirmations']);
+        }
+
+        if(isset($form['notifications'])) {
+          $form['notifications'] = GFExport::set_property_as_key($form['notifications'], 'id');
+          $form['notifications'] = GFFormsModel::trim_conditional_logic_values($form['notifications'], $form);
+          GFFormsModel::update_form_meta($form_id, $form['notifications'], 'notifications');
+          unset($form['notifications']);
+        }
+
+        RGFormsModel::update_form_meta($form_id, $form);
+
+      }
+
+
+    }
+
   }
 
 

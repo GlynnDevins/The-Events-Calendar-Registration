@@ -12,12 +12,15 @@
 
 class EventsCalendarGravityFormsRegistration {
 
+  public static $formTitle = 'Event Registration';
+
   public function __construct() {
 
-    add_action( 'admin_init',     __CLASS__.'::admin_init' );
-    add_action('admin_notices',   __CLASS__.'::admin_notice');
-    add_action('admin_menu',      __CLASS__.'::admin_menu');
-    add_action( 'widgets_init',   __CLASS__.'::register_events_sidebar' );
+    add_action( 'admin_init',       __CLASS__.'::admin_init' );
+    add_action('admin_notices',     __CLASS__.'::admin_notice');
+    add_action('admin_menu',        __CLASS__.'::admin_menu');
+    add_action('post_row_actions',  __CLASS__.'::post_row_actions');
+    add_action( 'widgets_init',     __CLASS__.'::register_events_sidebar' );
 
     add_filter('tribe_events_template', __CLASS__.'::template_filter' );
 
@@ -95,6 +98,46 @@ class EventsCalendarGravityFormsRegistration {
       array( __CLASS__, 'settingsPage' )
     );
 
+
+    // Export entries
+    if($_REQUEST['page'] === 'tribe-events-calendar-registration-export' and !is_null($_REQUEST['id'])) {
+      $post_id = $_REQUEST['id'];
+      $asdf = '';
+      $forms = GFFormsModel::get_forms();
+      foreach($forms as $form){
+        if(strtolower($form->title) == strtolower(static::$formTitle)) {
+          $form_id = $form->id;
+          $entries = GFAPI::get_entries($form_id, array(
+            'field_filters' => array(
+              array(
+                'key'     => '7',
+                'value'   => $post_id
+              )
+            )
+          ));
+          $asdf = '';
+          header("Content-type: text/csv");
+          header("Content-Disposition: attachment; filename=" . sanitize_title_with_dashes($entries[0]['6']) . ".csv");
+          header("Pragma: no-cache");
+          header("Expires: 0");
+
+          echo $entries[0]['6'] . "\n";
+          echo "Date Created, First Name, Last Name, Email, Phone Number, Number of Participants\n";
+          foreach($entries as $entry) {
+            echo $entry['date_created'] . ',';
+            echo $entry['1'] . ',';
+            echo $entry['2'] . ',';
+            echo $entry['3'] . ',';
+            echo $entry['4'] . ',';
+            echo $entry['5'] . "\n";
+          }
+
+          die();
+        }
+      }
+
+
+    }
 
   }
   public function settingsPage() {
@@ -324,7 +367,7 @@ class EventsCalendarGravityFormsRegistration {
       $form = array(
         'labelPlacement'          => 'top_label',
         'useCurrentUserAsAuthor'  => '1',
-        'title'                   => 'Event Registration TEST',
+        'title'                   => static::$formTitle,
         'descriptionPlacement'    => 'below',
         'button'                  => array(
           'type'  => 'text',
@@ -363,7 +406,7 @@ class EventsCalendarGravityFormsRegistration {
             'label'       => 'Phone'
           ),
           array(
-            'id'          => '7',
+            'id'          => '5',
             'isRequired'  => '1',
             'size'        => 'medium',
             'type'        => 'select',
@@ -404,35 +447,42 @@ class EventsCalendarGravityFormsRegistration {
             )
           ),
           array(
-            'id'          => '8',
+            'id'          => '6',
             'size'        => 'medium',
             'type'        => 'hidden',
             'defaultValue'=> '{embed_post:post_title}',
             'label'       => 'Event Name'
           ),
           array(
-            'id'          => '9',
+            'id'          => '7',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '{embed_post:ID}',
+            'label'       => 'Event Post ID'
+          ),
+          array(
+            'id'          => '8',
             'size'        => 'medium',
             'type'        => 'hidden',
             'defaultValue'=> '{custom_field:_EventStartDate}',
             'label'       => 'Event Start Date'
           ),
           array(
-            'id'          => '10',
+            'id'          => '9',
             'size'        => 'medium',
             'type'        => 'hidden',
             'defaultValue'=> '{custom_field:_EventEndDate}',
             'label'       => 'Event End Date'
           ),
           array(
-            'id'          => '11',
+            'id'          => '10',
             'size'        => 'medium',
             'type'        => 'hidden',
             'defaultValue'=> '{custom_field:_EventRecurrence}',
             'label'       => 'Event Recurrence'
           ),
           array(
-            'id'          => '12',
+            'id'          => '11',
             'size'        => 'medium',
             'type'        => 'hidden',
             'defaultValue'=> '{custom_field:_EventAllDay}',
@@ -505,6 +555,16 @@ class EventsCalendarGravityFormsRegistration {
 
     }
 
+  }
+
+  public static function post_row_actions($arg= '') {
+    $asdf = $arg;
+    global $wp_the_query;
+    if($wp_the_query->query_vars['post_type'] == "tribe_events") {
+      global $post;
+      $arg[] = '<a href="' . admin_url('edit.php?post_type=tribe_events&page=tribe-events-calendar-registration-export&id=' . $post->ID) . '" title="Export Entries">Export Entries</a>';
+    }
+    return $arg;
   }
 
 

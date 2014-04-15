@@ -11,7 +11,7 @@ When enabled, this plugin auto generates:
   - A gravity form titled "Event Registration"
   - An advanced custom field group on the post type tribe_events
     - This custom field will be visible on the events add/edit page
-  - Pages:
+  - Pages
     - Events
       - Thank You
 

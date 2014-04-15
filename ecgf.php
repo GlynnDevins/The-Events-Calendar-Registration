@@ -101,8 +101,8 @@ class EventsCalendarGravityFormsRegistration {
 
     // Export entries
     if($_REQUEST['page'] === 'tribe-events-calendar-registration-export' and !is_null($_REQUEST['id'])) {
+
       $post_id = $_REQUEST['id'];
-      $asdf = '';
       $forms = GFFormsModel::get_forms();
       foreach($forms as $form){
         if(strtolower($form->title) == strtolower(static::$formTitle)) {
@@ -115,7 +115,6 @@ class EventsCalendarGravityFormsRegistration {
               )
             )
           ));
-          $asdf = '';
           header("Content-type: text/csv");
           header("Content-Disposition: attachment; filename=" . sanitize_title_with_dashes($entries[0]['6']) . ".csv");
           header("Pragma: no-cache");
@@ -364,6 +363,8 @@ class EventsCalendarGravityFormsRegistration {
 
     if(class_exists('GFAPI')) {
 
+      $thankyouPage = get_page_by_path('events/thank-you', OBJECT, 'page');
+
       $form = array(
         'labelPlacement'          => 'top_label',
         'useCurrentUserAsAuthor'  => '1',
@@ -488,40 +489,41 @@ class EventsCalendarGravityFormsRegistration {
             'defaultValue'=> '{custom_field:_EventAllDay}',
             'label'       => 'All Day Event'
           ),
-          'cssClass'        => 'contact-form-gfec-form',
-          'enableHoneypot'  => '1',
-          'confirmation'    => array(
-            array(
-              'id'        => '5316355c6c8c1',
-              'isDefault' => '1',
-              'type'      => 'page',
-              'name'      => 'Default Confirmation',
-              'pagId'     => '1240'
-            )
+        ),
+        'cssClass'        => 'contact-form-gfec-form',
+        'enableHoneypot'  => '1',
+        'confirmations'    => array(
+          array(
+            'id'          => '5316355c6c8c1',
+            'isDefault'   => '1',
+            'type'        => 'page',
+            'name'        => 'Default Confirmation',
+            'pageId'      => $thankyouPage->ID,
+            'queryString' => 'eventID={post_id:6}'
+          )
+        ),
+        'notifications'    => array(
+          array(
+            'id'      => '5316355c6bcd6',
+            'to'      => '{admin_email}',
+            'name'    => 'Admin Notification',
+            'event'   => 'form_submission',
+            'toType'  => 'email',
+            'subject' => 'Arbor Glen Event RSVP for {Event Name:5} - {Event Date"6}',
+            'message' => '{all_fields}',
+            'bcc'     => 'webadmin@glynndevins.com',
+            'from'    => '{admin_email}'
           ),
-          'notification'    => array(
-            array(
-              'id'      => '5316355c6bcd6',
-              'to'      => '{admin_email}',
-              'name'    => 'Admin Notification',
-              'event'   => 'form_submission',
-              'toType'  => 'email',
-              'subject' => 'Arbor Glen Event RSVP for {Event Name:5} - {Event Date"6}',
-              'message' => '{all_fields}',
-              'bcc'     => 'webadmin@glynndevins.com',
-              'from'    => '{admin_email}'
-            ),
-            array(
-              'id'      => '53163750d13d3',
-              'to'      => '3',
-              'name'    => 'RSVP',
-              'event'   => 'form_submission',
-              'toType'  => 'field',
-              'subject' => 'Thank You for Registering for (Event Name:5} - {Event Date:6}',
-              'message' => '{all_fields}',
-              'from'    => '{admin_email}',
-              'fromName'=> get_bloginfo('name')
-            )
+          array(
+            'id'      => '53163750d13d3',
+            'to'      => '3',
+            'name'    => 'RSVP',
+            'event'   => 'form_submission',
+            'toType'  => 'field',
+            'subject' => 'Thank You for Registering for (Event Name:5} - {Event Date:6}',
+            'message' => '{all_fields}',
+            'from'    => '{admin_email}',
+            'fromName'=> get_bloginfo('name')
           )
         )
       );

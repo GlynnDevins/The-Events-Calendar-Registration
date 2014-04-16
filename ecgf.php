@@ -314,12 +314,15 @@ class EventsCalendarGravityFormsRegistration {
     endif;
   }
 
-  public static function template_filter($arg = '', $arg2 = '', $arg3 = '') {
+  public static function template_filter($arg = '') {
     $path = explode('/', $arg);
     $file = end($path);
-    $pluginTemplate = dirname(__FILE__) . '/tribe-events/';
-    $defaultTemplate = $pluginTemplate . $file;
-    if(is_dir($pluginTemplate) and file_exists($defaultTemplate)) {
+    $listDir = '';
+    if(in_array('list', $path)) {
+      $listDir = 'list/';
+    }
+    $defaultTemplate = dirname(__FILE__) . '/tribe-events/' . $listDir . $file;
+    if(file_exists($defaultTemplate)) {
       return $defaultTemplate;
     }
 

@@ -61,24 +61,6 @@ class EventsCalendarGravityFormsRegistration {
   // Admin init - setup plugin settings page
   public static function admin_init() {
 
-//    add_settings_section(
-//      'eg_setting_section',
-//      'Example settings section in reading',
-//      __CLASS__.'::eg_setting_section_callback_function',
-//      'reading'
-//    );
-//    add_settings_field(
-//      'eg_setting_name',
-//      'Example setting Name',
-//      __CLASS__.'::eg_setting_callback_function',
-//      'reading',
-//      'eg_setting_section'
-//    );
-//    register_setting( 'reading', 'eg_setting_name' );
-
-
-//    apply_filters( 'tribe_settings_admin_slug', 'tribe-events-calendar' );
-
     if(isset($_POST['events-calendar-updated']) and $_POST['events-calendar-updated'] == "submitted") {
       static::updateSettings();
     }
@@ -348,12 +330,17 @@ class EventsCalendarGravityFormsRegistration {
   public static function generatePages() {
     $page = get_page_by_path('events', OBJECT, 'page');
     if(null === $page) {
-      wp_insert_post(array(
+      $eventsPageID = wp_insert_post(array(
         'name'        => 'events',
         'post_title'  => 'Events',
         'post_status' => 'publish',
         'post_type'   => 'page'
       ));
+    }
+    if(isset($eventsPageID)) {
+      $parent_id = $eventsPageID;
+    } else {
+      $parent_id = $page->ID;
     }
     $page2 = get_page_by_path('events/thank-you', OBJECT, 'page');
     if(null === $page2) {
@@ -362,7 +349,7 @@ class EventsCalendarGravityFormsRegistration {
         'post_title'  => 'Thank you',
         'post_status' => 'publish',
         'post_type'   => 'page',
-        'post_parent' => $page->ID
+        'post_parent' => $parent_id
       ));
     }
   }

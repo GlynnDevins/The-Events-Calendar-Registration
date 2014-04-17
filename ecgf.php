@@ -9,7 +9,6 @@
  * License:
  */
 
-
 class EventsCalendarGravityFormsRegistration {
 
   public static $formTitle = 'Event Registration';
@@ -50,6 +49,7 @@ class EventsCalendarGravityFormsRegistration {
       $plugins[] = 'Advanced Custom Fields';
     endif;
 
+
     $issues = '';
     if (empty($plugins)) :
       return false;
@@ -62,7 +62,7 @@ class EventsCalendarGravityFormsRegistration {
   public static function admin_init() {
 
     if(isset($_POST['events-calendar-updated']) and $_POST['events-calendar-updated'] == "submitted") {
-      static::updateSettings();
+      self::updateSettings();
     }
 
   }
@@ -87,7 +87,7 @@ class EventsCalendarGravityFormsRegistration {
       $post_id = $_REQUEST['id'];
       $forms = GFFormsModel::get_forms();
       foreach($forms as $form){
-        if(strtolower($form->title) == strtolower(static::$formTitle)) {
+        if(strtolower($form->title) == strtolower(self::$formTitle)) {
           $form_id = $form->id;
 
           $entries = GFAPI::get_entries(
@@ -175,23 +175,13 @@ class EventsCalendarGravityFormsRegistration {
 
   }
 
-
-
-//
-//  public static function eg_setting_section_callback_function() {
-//    echo '<p>Intro text for our settings section</p>';
-//  }
-//  public static function eg_setting_callback_function() {
-//    echo '<input name="eg_setting_name" id="gv_thumbnails_insert_into_excerpt" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'eg_setting_name' ), false ) . ' /> Explanation text';
-//  }
-
   /**
    * Display Admin Notice if there are Issues with necessary plugins not being active
    *
    */
   public static function admin_notice() {
-    if (static::req_plugins_active() !== false) :
-      $issues = static::req_plugins_active();
+    if (self::req_plugins_active() !== false) :
+      $issues = self::req_plugins_active();
       echo '<div class="error">';
       echo 'The following plugins are required for event registration: ';
       echo '<ul>';
@@ -207,13 +197,13 @@ class EventsCalendarGravityFormsRegistration {
    * Method called when this plugin is activated
    */
   public static function activate() {
-    if(static::req_plugins_active() !== false) {
+    if(self::req_plugins_active() !== false and self::checkPHPVersion() !== false) {
 //      unset($_GET['action']);
-      static::admin_notice();
+      self::admin_notice();
       exit;
     }
-    static::generatePages();
-    static::generateForm();
+    self::generatePages();
+    self::generateForm();
   }
 
   /**
@@ -291,7 +281,7 @@ class EventsCalendarGravityFormsRegistration {
             <div id="event-registration-form">
             <?php
             // need to check to see if this function exists - else display "install plugin"
-            static::show_form('Event Registration'); // display the event registration form **requires the Events Calendar / Gravity Forms integration plugin.
+            self::show_form('Event Registration'); // display the event registration form **requires the Events Calendar / Gravity Forms integration plugin.
           else:
             // let the user know that registration time period has lapsed
             echo '<div class="notice">' . get_field('online_registration_expired_message') . '</div>';
@@ -365,7 +355,7 @@ class EventsCalendarGravityFormsRegistration {
       $form = array(
         'labelPlacement'          => 'top_label',
         'useCurrentUserAsAuthor'  => '1',
-        'title'                   => static::$formTitle,
+        'title'                   => self::$formTitle,
         'descriptionPlacement'    => 'below',
         'button'                  => array(
           'type'  => 'text',
@@ -568,5 +558,3 @@ class EventsCalendarGravityFormsRegistration {
 
 
 }
-
-$ecgf = new EventsCalendarGravityFormsRegistration();

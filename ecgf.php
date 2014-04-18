@@ -3,7 +3,7 @@
  * Plugin Name: The Events Calendar Gravity Forms Registration
  * Plugin URI:
  * Description: This plugin will integrate The Events Calendar and Gravity Forms for Event Registration
- * Version: 0.2
+ * Version: 0.3
  * Author: GlynnDevins
  * Author URI: http://www.glynndevins.com
  * License:
@@ -26,6 +26,12 @@ class EventsCalendarGravityFormsRegistration {
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
 
     include_once( 'acf.php' );
+
+    if ( ! file_exists(get_stylesheet_directory() . '/tribe-events/tribe-events.css') ) {
+      if(file_exists(dirname(__FILE__) . '/tribe-events/tribe-events.css')) {
+        wp_enqueue_style('tribe-events', dirname(__FILE__) . '/tribe-events/tribe-events.css');
+      }
+    }
 
   }
 
@@ -269,6 +275,7 @@ class EventsCalendarGravityFormsRegistration {
 
         // set some dates and times for use
         $startdatetime = tribe_get_start_date($post->ID, false, 'U'); // get the start date and time set for the event
+        $registrationExpirationEnabled = get_field('enable_registration_expiration'); // get the date and time set for registration cutoff
         $disableregdatetime = get_field('registration_expiration_date_and_time'); // get the date and time set for registration cutoff
         if($disableregdatetime !== false) {
           $disableregoffset = get_date_from_gmt(date('Y-m-d H:i:s', $disableregdatetime), 'U'); // get the registration cutoff time offset based on what is set in wordpress options
@@ -279,7 +286,7 @@ class EventsCalendarGravityFormsRegistration {
         echo '<h3>' . get_field('registration_headline') . '</h3>'; // show the registration headline
 
         if (get_field('enable_online_registration')): //check to see if online registration is enabled
-          if ($disableregdatetime == false or (isset($disableregoffset) and ('timestamp') <= $disableregoffset)): // check to see if the current time for the website is at or before the registration cutoff
+          if (($registrationExpirationEnabled === false) or ($disableregdatetime == false or (isset($disableregoffset) and ('timestamp') <= $disableregoffset))): // check to see if the current time for the website is at or before the registration cutoff
             ?>
             <div id="event-registration-form">
             <?php

@@ -491,17 +491,6 @@ class EventsCalendarGravityFormsRegistration {
         ),
         'notifications'    => array(
           array(
-            'id'      => '5316355c6bcd6',
-            'to'      => '{admin_email}',
-            'name'    => 'Admin Notification',
-            'event'   => 'form_submission',
-            'toType'  => 'email',
-            'subject' => 'Arbor Glen Event RSVP for {Event Name:5} - {Event Date"6}',
-            'message' => '{all_fields}',
-            'bcc'     => 'webadmin@glynndevins.com',
-            'from'    => '{admin_email}'
-          ),
-          array(
             'id'      => '53163750d13d3',
             'to'      => '3',
             'name'    => 'RSVP',
@@ -558,3 +547,5 @@ class EventsCalendarGravityFormsRegistration {
 
 
 }
+
+$ecgf = new EventsCalendarGravityFormsRegistration();

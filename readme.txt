@@ -2,8 +2,8 @@
 Contributors: Fastmover
 Tags: gravityforms, events, the events calendar, advanced custom fields, registration, rsvp
 Requires at least: 3.7
-Tested up to: 3.8.3
-Stable tag: 1.0
+Tested up to: 3.9
+Stable tag: 0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

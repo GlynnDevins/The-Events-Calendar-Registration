@@ -3,7 +3,7 @@
  * Plugin Name: The Events Calendar Gravity Forms Registration
  * Plugin URI:
  * Description: This plugin will integrate The Events Calendar and Gravity Forms for Event Registration
- * Version: 0.3
+ * Version: 0.7
  * Author: GlynnDevins
  * Author URI: http://www.glynndevins.com
  * License:
@@ -29,7 +29,7 @@ class EventsCalendarGravityFormsRegistration {
 
     if ( ! file_exists(get_stylesheet_directory() . '/tribe-events/tribe-events.css') ) {
       if(file_exists(dirname(__FILE__) . '/tribe-events/tribe-events.css')) {
-        wp_enqueue_style('tribe-events', dirname(__FILE__) . '/tribe-events/tribe-events.css');
+        wp_enqueue_style('tribe-events', plugins_url() . '/the-events-calendar-registration/tribe-events/tribe-events.css');
       }
     }
 
@@ -203,7 +203,7 @@ class EventsCalendarGravityFormsRegistration {
    * Method called when this plugin is activated
    */
   public static function activate() {
-    if(self::req_plugins_active() !== false and self::checkPHPVersion() !== false) {
+    if(self::req_plugins_active() !== false) {
 //      unset($_GET['action']);
       self::admin_notice();
       exit;

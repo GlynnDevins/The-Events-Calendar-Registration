@@ -29,10 +29,6 @@ get_header();
     </div>
 </div>
 <div id="secondary">
-    <?php
-    if(get_option('tecr_location') and 'sidebar' == get_option('tecr_location')) {
-      EventsCalendarGravityFormsRegistration::registration_conditionals();
-    }
-    ?>
+  <?php if ( dynamic_sidebar('ecgf_sidebar_widget') ) : else : endif; ?>
 </div>
     <?php get_footer(); ?>

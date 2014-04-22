@@ -24,8 +24,8 @@ When enabled, this plugin auto generates:
 - An advanced custom field group on the post type tribe_events
 - - This custom field will be visible on the events add/edit page 
 - Pages
-- - Events
-- - - Thank You
+  - Events
+    - Thank You
 
 With this plugin enabled, you can easily export the entries on a per event basis by going to the edit events page, and using the Export Entries action when you mouse over the row.
 

@@ -15,11 +15,11 @@ class EventsCalendarGravityFormsRegistration {
 
   public function __construct() {
 
-    add_action( 'admin_init',       __CLASS__.'::admin_init' );
+//    add_action( 'admin_init',       __CLASS__.'::admin_init' );
     add_action('admin_notices',     __CLASS__.'::admin_notice');
     add_action('admin_menu',        __CLASS__.'::admin_menu');
     add_action('post_row_actions',  __CLASS__.'::post_row_actions');
-    add_action( 'widgets_init',     __CLASS__.'::register_events_sidebar' );
+    add_action( 'widgets_init',     __CLASS__.'::widgets' );
 
     add_filter('tribe_events_template', __CLASS__.'::template_filter' );
 
@@ -67,9 +67,9 @@ class EventsCalendarGravityFormsRegistration {
   // Admin init - setup plugin settings page
   public static function admin_init() {
 
-    if(isset($_POST['events-calendar-updated']) and $_POST['events-calendar-updated'] == "submitted") {
-      self::updateSettings();
-    }
+//    if(isset($_POST['events-calendar-updated']) and $_POST['events-calendar-updated'] == "submitted") {
+//      self::updateSettings();
+//    }
 
   }
 
@@ -77,14 +77,14 @@ class EventsCalendarGravityFormsRegistration {
 
     $tribe_settings = TribeSettings::instance();
 
-    add_submenu_page(
-      'edit.php?post_type='.TribeEvents::POSTTYPE,
-      __( 'The Events Calendar Registration Settings', 'tribe-events-calendar'),
-      __('Registration Settings', 'tribe-events-calendar'),
-      $tribe_settings->requiredCap,
-      $tribe_settings->adminSlug.'-registration',
-      array( __CLASS__, 'settingsPage' )
-    );
+//    add_submenu_page(
+//      'edit.php?post_type='.TribeEvents::POSTTYPE,
+//      __( 'The Events Calendar Registration Settings', 'tribe-events-calendar'),
+//      __('Registration Settings', 'tribe-events-calendar'),
+//      $tribe_settings->requiredCap,
+//      $tribe_settings->adminSlug.'-registration',
+//      array( __CLASS__, 'settingsPage' )
+//    );
 
 
     // Export entries
@@ -136,48 +136,48 @@ class EventsCalendarGravityFormsRegistration {
   }
   public function settingsPage() {
 
-    $option = get_option('tecr_location');
-    $options = array(
-      'sidebar' => "Sidebar",
-      'maincontent' => "Main Content"
-    );
-    $selected = 'selected="selected"';
-
-    ?>
-
-    <h3>The Events Calendar Registration Settings</h3>
-    <p>
-    <form method="post">
-      <label for="location">
-        Location for Registration Form:
-      </label>
-      <select name="location" autofocus>
-        <?php foreach($options as $key => $value): ?>
-          <option value="<?=$key; ?>" <?php if($key===$option) { echo $selected; } ?>><?=$value; ?></option>
-        <?php endforeach; ?>
-      </select>
-      <input type="hidden" name="events-calendar-updated" value="submitted"/>
-      <input type="submit"/>
-    </form>
-    </p>
+//    $option = get_option('tecr_location');
+//    $options = array(
+//      'sidebar' => "Sidebar",
+//      'maincontent' => "Main Content"
+//    );
+//    $selected = 'selected="selected"';
+//
+//    ?>
+<!---->
+<!--    <h3>The Events Calendar Registration Settings</h3>-->
+<!--    <p>-->
+<!--    <form method="post">-->
+<!--      <label for="location">-->
+<!--        Location for Registration Form:-->
+<!--      </label>-->
+<!--      <select name="location" autofocus>-->
+<!--        --><?php //foreach($options as $key => $value): ?>
+<!--          <option value="--><?//=$key; ?><!--" --><?php //if($key===$option) { echo $selected; } ?><!-->--><?//=$value; ?><!--</option>-->
+<!--        --><?php //endforeach; ?>
+<!--      </select>-->
+<!--      <input type="hidden" name="events-calendar-updated" value="submitted"/>-->
+<!--      <input type="submit"/>-->
+<!--    </form>-->
+<!--    </p>-->
 
   <?php
   }
 
   public static function updateSettings() {
 
-    $currentSetting = get_option('tecr_location');
-    $newSetting = mysql_escape_string($_POST['location']);
-
-    if($currentSetting) {
-      if($newSetting === $currentSetting) {
-        return;
-      }
-      update_option('tecr_location', $newSetting);
-      return;
-    }
-
-    add_option('tecr_location', $newSetting);
+//    $currentSetting = get_option('tecr_location');
+//    $newSetting = mysql_escape_string($_POST['location']);
+//
+//    if($currentSetting) {
+//      if($newSetting === $currentSetting) {
+//        return;
+//      }
+//      update_option('tecr_location', $newSetting);
+//      return;
+//    }
+//
+//    add_option('tecr_location', $newSetting);
 
   }
 
@@ -236,16 +236,38 @@ class EventsCalendarGravityFormsRegistration {
    * Register Events Sidebar for Template
    *
    */
-  public static function register_events_sidebar() {
+  public static function widgets() {
+
     register_sidebar( array(
       'name'          => __( 'Events Sidebar', 'events' ),
-      'id'            => 'events',
+      'id'            => 'ecgf_sidebar_widget',
       'description'   => __( 'Appears on the Events Page', 'events' ),
       'before_widget' => '<aside id="%1$s" class="widget %2$s">',
       'after_widget'  => '</aside>',
       'before_title'  => '<h3 class="widget-title">',
       'after_title'   => '</h3>',
     ) );
+
+    register_sidebar( array(
+      'name'          => __( 'Event Widget Area (Above Map)', 'events' ),
+      'id'            => 'ecgf_single_widget',
+      'description'   => __( 'Appears on the Events Page Above Google Map', 'events' ),
+      'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+      'after_widget'  => '</aside>',
+      'before_title'  => '<h3 class="widget-title">',
+      'after_title'   => '</h3>',
+    ) );
+
+    wp_register_sidebar_widget(
+      'ecgf_event_registration_widget',
+      'Event Registration Form',
+      __CLASS__.'::widget_registration_form',
+      array(
+        'classname'   => 'widget_ecgf_registration_form',
+        'description' => 'A registration form for your events'
+      )
+    );
+
   }
 
   /**
@@ -267,9 +289,9 @@ class EventsCalendarGravityFormsRegistration {
    * Conditionals to determine what and when items are displayed for registration
    *
    */
-  public static function registration_conditionals(){
-    //check to see if the sidebar is active
-    if (is_active_sidebar('events')) :
+  public static function render_registration_form(){
+//    //check to see if the sidebar is active
+//    if (is_active_sidebar('events')) :
       //check to see if the page is a single event
       if (is_singular('tribe_events')) :
 
@@ -281,7 +303,15 @@ class EventsCalendarGravityFormsRegistration {
           $disableregoffset = get_date_from_gmt(date('Y-m-d H:i:s', $disableregdatetime), 'U'); // get the registration cutoff time offset based on what is set in wordpress options
         }
 
-        // THIS IS UNUSED CODE //$startdate = date_i18n(get_option('date_format'), $startdatetime, true); //$starttime = date_i18n(get_option('time_format'), $startdatetime, true); //$disabledate = date_i18n(get_option('date_format'), $disableregdatetime, true); //$disabletime = date_i18n(get_option('time_format'), $disableregdatetime, true); //$gmt_offset_hours = get_option('gmt_offset'); //$gmt_offset_seconds = $gmt_offset_hours * -3600; //echo $disableregdatetime + $gmt_offset_seconds; //echo '<br />'.current_time( 'timestamp' );
+        // THIS IS UNUSED CODE
+        //$startdate = date_i18n(get_option('date_format'), $startdatetime, true);
+        //$starttime = date_i18n(get_option('time_format'), $startdatetime, true);
+        //$disabledate = date_i18n(get_option('date_format'), $disableregdatetime, true);
+        //$disabletime = date_i18n(get_option('time_format'), $disableregdatetime, true);
+        //$gmt_offset_hours = get_option('gmt_offset');
+        //$gmt_offset_seconds = $gmt_offset_hours * -3600;
+        //echo $disableregdatetime + $gmt_offset_seconds;
+        //echo '<br />'.current_time( 'timestamp' );
 
         echo '<h3>' . get_field('registration_headline') . '</h3>'; // show the registration headline
 
@@ -306,12 +336,12 @@ class EventsCalendarGravityFormsRegistration {
       <?php
       endif;
 
-      if (!is_singular('tribe_events')) :
+//      if (!is_singular('tribe_events')) :
         // only display the events sidebar widgets on event pages pages that are not a single event.
-        dynamic_sidebar('events');
-      endif;
+//        dynamic_sidebar('events');
+//      endif;
 
-    endif;
+//    endif;
   }
 
   public static function template_filter($arg = '') {
@@ -554,6 +584,19 @@ class EventsCalendarGravityFormsRegistration {
     }
     return $arg;
   }
+
+  public static function widget_registration_form($args) {
+    extract($args);
+    ?>
+    <?php echo $before_widget; ?>
+    <?php echo $before_title
+      . 'My Unique Widget'
+      . $after_title; ?>
+    <?=self::render_registration_form(); ?>
+    <?php echo $after_widget; ?>
+  <?php
+  }
+
 
 
 }

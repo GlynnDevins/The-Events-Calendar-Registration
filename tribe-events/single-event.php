@@ -100,11 +100,7 @@ $event_id = get_the_ID();
             //echo tribe_events_single_event_meta()
             ?>
             <?php do_action('tribe_events_single_event_after_the_meta') ?>
-            <?php
-            if(get_option('tecr_location') and 'maincontent' == get_option('tecr_location')) {
-              EventsCalendarGravityFormsRegistration::registration_conditionals();
-            }
-            ?>
+            <?php if ( dynamic_sidebar('ecgf_single_widget') ) : else : endif; ?>
             <div class="event-googlemap">
                 <?php
                     if (tribe_embed_google_map() == 'true') :

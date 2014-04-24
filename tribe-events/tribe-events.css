@@ -2,3 +2,6 @@
 #tribe-events-pg-template {
     margin: auto;
 }
+html body .gform_body input {
+    border: 1px solid #000;
+}

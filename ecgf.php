@@ -18,8 +18,10 @@ class EventsCalendarGravityFormsRegistration {
 //    add_action( 'admin_init',       __CLASS__.'::admin_init' );
     add_action('admin_notices',     __CLASS__.'::admin_notice');
     add_action('admin_menu',        __CLASS__.'::admin_menu');
+    add_action("gform_pre_render",  __CLASS__."::form_render_date_fields", 10, 3);
     add_action('post_row_actions',  __CLASS__.'::post_row_actions');
     add_action( 'widgets_init',     __CLASS__.'::widgets' );
+
 
     add_filter('tribe_events_template', __CLASS__.'::template_filter' );
 
@@ -602,6 +604,30 @@ class EventsCalendarGravityFormsRegistration {
   <?php
   }
 
+  public static function form_render_date_fields($form = '', $arg2 = '') {
+
+    if( ( $form['title'] !== 'Event Registration' ) ) {
+      return $form;
+    }
+
+    foreach($form['fields'] as &$field){
+
+      $field_ids = array("90", "91");
+      if( ! in_array($field['id'], $field_ids) ) {
+        continue;
+      }
+      if($field['id'] === "90") {
+        // Event Formatted Date
+        $field['content'] = '';
+      }
+      if($field['id'] === "91") {
+        // Event Formatted Time
+        $field['content'] = '';
+      }
+
+    }
+    return $form;
+  }
 
 
 }

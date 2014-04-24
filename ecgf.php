@@ -303,16 +303,7 @@ class EventsCalendarGravityFormsRegistration {
           $disableregoffset = get_date_from_gmt(date('Y-m-d H:i:s', $disableregdatetime), 'U'); // get the registration cutoff time offset based on what is set in wordpress options
         }
 
-        // THIS IS UNUSED CODE
-        //$startdate = date_i18n(get_option('date_format'), $startdatetime, true);
-        //$starttime = date_i18n(get_option('time_format'), $startdatetime, true);
-        //$disabledate = date_i18n(get_option('date_format'), $disableregdatetime, true);
-        //$disabletime = date_i18n(get_option('time_format'), $disableregdatetime, true);
-        //$gmt_offset_hours = get_option('gmt_offset');
-        //$gmt_offset_seconds = $gmt_offset_hours * -3600;
-        //echo $disableregdatetime + $gmt_offset_seconds;
-        //echo '<br />'.current_time( 'timestamp' );
-
+        
         echo '<h3>' . get_field('registration_headline') . '</h3>'; // show the registration headline
 
         if (get_field('enable_online_registration')): //check to see if online registration is enabled
@@ -516,6 +507,20 @@ class EventsCalendarGravityFormsRegistration {
             'defaultValue'=> '{custom_field:_EventAllDay}',
             'label'       => 'All Day Event'
           ),
+          array(
+            'id'          => '90',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '',
+            'label'       => 'Event Formatted Date'
+          ),
+          array(
+            'id'          => '91',
+            'size'        => 'medium',
+            'type'        => 'hidden',
+            'defaultValue'=> '',
+            'label'       => 'Event Formatted Time'
+          )
         ),
         'cssClass'        => 'contact-form-gfec-form',
         'enableHoneypot'  => '1',

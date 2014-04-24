@@ -616,13 +616,16 @@ class EventsCalendarGravityFormsRegistration {
       if( ! in_array($field['id'], $field_ids) ) {
         continue;
       }
+
+      global $post;
+
       if($field['id'] === "90") {
         // Event Formatted Date
-        $field['content'] = '';
+        $field['defaultValue'] = tribe_get_start_date($post, false, 'l, F j, Y');
       }
       if($field['id'] === "91") {
         // Event Formatted Time
-        $field['content'] = '';
+        $field['defaultValue'] = tribe_get_start_date($post, false, 'g:i a ') . ' ' . tribe_get_start_date($post, false, 'T');
       }
 
     }

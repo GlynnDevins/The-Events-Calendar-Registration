@@ -305,11 +305,13 @@ class EventsCalendarGravityFormsRegistration {
           $disableregoffset = get_date_from_gmt(date('Y-m-d H:i:s', $disableregdatetime), 'U'); // get the registration cutoff time offset based on what is set in wordpress options
         }
 
+
+
         
         echo '<h3>' . get_field('registration_headline') . '</h3>'; // show the registration headline
 
         if (get_field('enable_online_registration')): //check to see if online registration is enabled
-          if (($registrationExpirationEnabled === false) or ($disableregdatetime == false or (isset($disableregoffset) and ('timestamp') <= $disableregoffset))): // check to see if the current time for the website is at or before the registration cutoff
+          if (($registrationExpirationEnabled === false) or ($disableregdatetime == false or (isset($disableregoffset) and time() <= $disableregoffset))): // check to see if the current time for the website is at or before the registration cutoff
             ?>
             <div id="event-registration-form">
             <?php

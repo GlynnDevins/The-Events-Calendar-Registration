@@ -15,7 +15,6 @@ class EventsCalendarGravityFormsRegistration {
 
   public function __construct() {
 
-//    add_action( 'admin_init',       __CLASS__.'::admin_init' );
     add_action('admin_notices',     __CLASS__.'::admin_notice');
     add_action('admin_menu',        __CLASS__.'::admin_menu');
     add_action("gform_pre_render",  __CLASS__."::form_render_date_fields", 10, 3);
@@ -57,28 +56,9 @@ class EventsCalendarGravityFormsRegistration {
     endif;
   }
 
-  // Admin init - setup plugin settings page
-  public static function admin_init() {
-
-//    if(isset($_POST['events-calendar-updated']) and $_POST['events-calendar-updated'] == "submitted") {
-//      self::updateSettings();
-//    }
-
-  }
-
   public static function admin_menu() {
 
     $tribe_settings = TribeSettings::instance();
-
-//    add_submenu_page(
-//      'edit.php?post_type='.TribeEvents::POSTTYPE,
-//      __( 'The Events Calendar Registration Settings', 'tribe-events-calendar'),
-//      __('Registration Settings', 'tribe-events-calendar'),
-//      $tribe_settings->requiredCap,
-//      $tribe_settings->adminSlug.'-registration',
-//      array( __CLASS__, 'settingsPage' )
-//    );
-
 
     // Export entries
     if($_REQUEST['page'] === 'tribe-events-calendar-registration-export' and !is_null($_REQUEST['id'])) {
@@ -125,52 +105,6 @@ class EventsCalendarGravityFormsRegistration {
 
 
     }
-
-  }
-  public function settingsPage() {
-
-//    $option = get_option('tecr_location');
-//    $options = array(
-//      'sidebar' => "Sidebar",
-//      'maincontent' => "Main Content"
-//    );
-//    $selected = 'selected="selected"';
-//
-//    ?>
-<!---->
-<!--    <h3>The Events Calendar Registration Settings</h3>-->
-<!--    <p>-->
-<!--    <form method="post">-->
-<!--      <label for="location">-->
-<!--        Location for Registration Form:-->
-<!--      </label>-->
-<!--      <select name="location" autofocus>-->
-<!--        --><?php //foreach($options as $key => $value): ?>
-<!--          <option value="--><?//=$key; ?><!--" --><?php //if($key===$option) { echo $selected; } ?><!-->--><?//=$value; ?><!--</option>-->
-<!--        --><?php //endforeach; ?>
-<!--      </select>-->
-<!--      <input type="hidden" name="events-calendar-updated" value="submitted"/>-->
-<!--      <input type="submit"/>-->
-<!--    </form>-->
-<!--    </p>-->
-
-  <?php
-  }
-
-  public static function updateSettings() {
-
-//    $currentSetting = get_option('tecr_location');
-//    $newSetting = mysql_escape_string($_POST['location']);
-//
-//    if($currentSetting) {
-//      if($newSetting === $currentSetting) {
-//        return;
-//      }
-//      update_option('tecr_location', $newSetting);
-//      return;
-//    }
-//
-//    add_option('tecr_location', $newSetting);
 
   }
 
@@ -283,8 +217,7 @@ class EventsCalendarGravityFormsRegistration {
    *
    */
   public static function render_registration_form(){
-//    //check to see if the sidebar is active
-//    if (is_active_sidebar('events')) :
+
       //check to see if the page is a single event
       if (is_singular('tribe_events')) :
 
@@ -322,12 +255,6 @@ class EventsCalendarGravityFormsRegistration {
       <?php
       endif;
 
-//      if (!is_singular('tribe_events')) :
-        // only display the events sidebar widgets on event pages pages that are not a single event.
-//        dynamic_sidebar('events');
-//      endif;
-
-//    endif;
   }
 
   // Dyamically Generate events page and thank you page

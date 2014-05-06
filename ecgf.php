@@ -595,15 +595,14 @@ class EventsCalendarGravityFormsRegistration {
   }
 
   public static function widget_registration_form($args) {
-    extract($args);
-    ?>
-    <?php echo $before_widget; ?>
-    <?php echo $before_title
-      . 'My Unique Widget'
-      . $after_title; ?>
-    <?=self::render_registration_form(); ?>
-    <?php echo $after_widget; ?>
-  <?php
+    if (is_singular('tribe_events')) {
+      extract($args);
+      ?>
+      <?php echo $before_widget; ?>
+      <?=self::render_registration_form(); ?>
+      <?php echo $after_widget;
+    }
+
   }
 
   public static function form_render_date_fields($form = '', $arg2 = '') {

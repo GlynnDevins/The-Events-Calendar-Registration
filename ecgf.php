@@ -26,12 +26,6 @@ class EventsCalendarGravityFormsRegistration {
 
     include_once( 'acf.php' );
 
-    if ( ! file_exists(get_stylesheet_directory() . '/tribe-events/tribe-events.css') ) {
-      if(file_exists(dirname(__FILE__) . '/tribe-events/tribe-events.css')) {
-        wp_enqueue_style('tribe-events', plugins_url() . '/the-events-calendar-registration/tribe-events/tribe-events.css');
-      }
-    }
-
   }
 
   /**

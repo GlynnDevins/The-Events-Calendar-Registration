@@ -3,10 +3,10 @@
  * Plugin Name: The Events Calendar Gravity Forms Registration
  * Plugin URI:
  * Description: This plugin will integrate The Events Calendar and Gravity Forms for Event Registration
- * Version: 0.9
+ * Version: 1.0
  * Author: GlynnDevins
  * Author URI: http://www.glynndevins.com
- * License:
+ * License: GPLv2 or later
  */
 
 class EventsCalendarGravityFormsRegistration {
@@ -19,7 +19,6 @@ class EventsCalendarGravityFormsRegistration {
     add_action('admin_menu',        __CLASS__.'::admin_menu');
     add_action("gform_pre_render",  __CLASS__."::form_render_date_fields", 10, 3);
     add_action('post_row_actions',  __CLASS__.'::post_row_actions');
-    add_action( 'widgets_init',     __CLASS__.'::widgets' );
 
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
 
@@ -157,44 +156,6 @@ class EventsCalendarGravityFormsRegistration {
       )))
       unset( $actions['deactivate'] );
     return $actions;
-  }
-
-  /**
-   * Register Events Sidebar for Template
-   *
-   */
-  public static function widgets() {
-
-    register_sidebar( array(
-      'name'          => __( 'Events Sidebar', 'events' ),
-      'id'            => 'ecgf_sidebar_widget',
-      'description'   => __( 'Appears on the Events Page', 'events' ),
-      'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-      'after_widget'  => '</aside>',
-      'before_title'  => '<h3 class="widget-title">',
-      'after_title'   => '</h3>',
-    ) );
-
-    register_sidebar( array(
-      'name'          => __( 'Event Widget Area (Above Map)', 'events' ),
-      'id'            => 'ecgf_single_widget',
-      'description'   => __( 'Appears on the Events Page Above Google Map', 'events' ),
-      'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-      'after_widget'  => '</aside>',
-      'before_title'  => '<h3 class="widget-title">',
-      'after_title'   => '</h3>',
-    ) );
-
-    wp_register_sidebar_widget(
-      'ecgf_event_registration_widget',
-      'Event Registration Form',
-      __CLASS__.'::widget_registration_form',
-      array(
-        'classname'   => 'widget_ecgf_registration_form',
-        'description' => 'A registration form for your events'
-      )
-    );
-
   }
 
   /**
@@ -497,17 +458,6 @@ class EventsCalendarGravityFormsRegistration {
     return $arg;
   }
 
-  public static function widget_registration_form($args) {
-    if (is_singular('tribe_events')) {
-      extract($args);
-      ?>
-      <?php echo $before_widget; ?>
-      <?=self::render_registration_form(); ?>
-      <?php echo $after_widget;
-    }
-
-  }
-
   public static function form_render_date_fields($form = '', $arg2 = '') {
 
     if( ( $form['title'] !== 'Event Registration' ) ) {
@@ -538,5 +488,73 @@ class EventsCalendarGravityFormsRegistration {
 
 
 }
+
+
+
+class ECGF_Widget extends WP_Widget {
+
+  /**
+   * Sets up the widgets name etc
+   */
+  public function __construct() {
+
+    parent::__construct(
+      'widget_ecgf',
+      __('Events Registration', 'text_domain'),
+      array( 'description' => __( 'Events Registration Widget', 'text_domain' ), )
+    );
+
+  }
+
+  /**
+   * Outputs the content of the widget
+   *
+   * @param array $args
+   * @param array $instance
+   */
+  public function widget( $args, $instance ) {
+    // outputs the content of the widget
+    extract($args);
+    ?>
+    <?php echo $before_widget; ?>
+    <?php
+    echo $before_title . $after_title;
+    ?>
+    <?=EventsCalendarGravityFormsRegistration::render_registration_form(); ?>
+    <?php echo $after_widget; ?>
+  <?php
+  }
+
+  /**
+   * Ouputs the options form on admin
+   *
+   * @param array $instance The widget options
+   */
+  public function form( $instance ) {
+    // outputs the options form on admin
+  }
+
+  /**
+   * Processing widget options on save
+   *
+   * @param array $new_instance The new options
+   * @param array $old_instance The previous options
+   */
+  public function update( $new_instance, $old_instance ) {
+    // processes widget options to be saved
+  }
+}
+
+
+
+
+add_action( 'widgets_init', function(){
+  register_widget( 'ECGF_Widget' );
+});
+
+
+
+
+
 
 $ecgf = new EventsCalendarGravityFormsRegistration();

@@ -3,7 +3,7 @@ Contributors: Fastmover
 Tags: gravityforms, events, the events calendar, advanced custom fields, registration, rsvp
 Requires at least: 3.7
 Tested up to: 3.9
-Stable tag: 0.9
+Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,17 +22,16 @@ When enabled, this plugin auto generates:
 
 - A gravity form titled "Event Registration"
 - An advanced custom field group on the post type tribe_events
-- - This custom field will be visible on the events add/edit page 
+- - These custom fields will be visible on the events add/edit page
 - Pages
-  - Events
-    - Thank You
+  - Events (top level)
+    - Thank You (nested under events)
 
 With this plugin enabled, you can easily export the entries on a per event basis by going to the edit events page, and using the Export Entries action when you mouse over the row.
 
-There is a plugin option page underneath Events > Registration settings, which allow you to dynamically move the registration form from the right sidebar to the main content just above the map (if there is one). This logic is set in the template files.
+This plugin does require you widgetize your events theme files, if you haven't already made a tribe-events folder in your theme, you will want to follow these directions: http://tri.be/support/documentation/events-calendar-themers-guide/
 
-There are tribe-events template files included with this that the plugin will use unless they're copied to the current active theme directory.
-
+Once you've copied out the template files you need, you need to add a widget area to them. To learn more about this, please see readme at: https://github.com/GlynnDevins/The-Events-Calendar-Registration
 
 
 == Installation ==
@@ -40,4 +39,4 @@ There are tribe-events template files included with this that the plugin will us
 1. Upload `the-events-calendar-registration` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Enable the form for an event on the event edit page.
-4. Style as needed copying the directory tribe-events out of the plugin folder into your active theme.
+4. Widgetize your events template files, if not already.  For further instructions reference: https://github.com/GlynnDevins/The-Events-Calendar-Registration

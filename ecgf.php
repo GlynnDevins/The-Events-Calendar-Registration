@@ -22,9 +22,6 @@ class EventsCalendarGravityFormsRegistration {
     add_action('post_row_actions',  __CLASS__.'::post_row_actions');
     add_action( 'widgets_init',     __CLASS__.'::widgets' );
 
-
-    add_filter('tribe_events_template', __CLASS__.'::template_filter' );
-
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
 
     include_once( 'acf.php' );
@@ -337,21 +334,6 @@ class EventsCalendarGravityFormsRegistration {
 //      endif;
 
 //    endif;
-  }
-
-  public static function template_filter($arg = '') {
-    $path = explode('/', $arg);
-    $file = end($path);
-    $listDir = '';
-    if(in_array('list', $path)) {
-      $listDir = 'list/';
-    }
-    $defaultTemplate = dirname(__FILE__) . '/tribe-events/' . $listDir . $file;
-    if(file_exists($defaultTemplate)) {
-      return $defaultTemplate;
-    }
-
-    return $arg;
   }
 
   // Dyamically Generate events page and thank you page

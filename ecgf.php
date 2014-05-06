@@ -3,7 +3,7 @@
  * Plugin Name: The Events Calendar Gravity Forms Registration
  * Plugin URI:
  * Description: This plugin will integrate The Events Calendar and Gravity Forms for Event Registration
- * Version: 0.8
+ * Version: 0.9
  * Author: GlynnDevins
  * Author URI: http://www.glynndevins.com
  * License:

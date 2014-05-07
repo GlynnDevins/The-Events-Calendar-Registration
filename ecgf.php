@@ -22,6 +22,8 @@ class EventsCalendarGravityFormsRegistration {
 
     register_activation_hook( __FILE__, __CLASS__.'::activate' );
 
+    add_shortcode( 'ecgf_form', __CLASS__.'::short_code_render' );
+
     include_once( 'acf.php' );
 
   }
@@ -177,7 +179,10 @@ class EventsCalendarGravityFormsRegistration {
    * Conditionals to determine what and when items are displayed for registration
    *
    */
-  public static function render_registration_form(){
+  public static function render_registration_form($returnOutput = false){
+    if($returnOutput) {
+      ob_start();
+    }
 
       //check to see if the page is a single event
       if (is_singular('tribe_events')) :
@@ -215,6 +220,10 @@ class EventsCalendarGravityFormsRegistration {
         ?>
       <?php
       endif;
+
+    if($returnOutput) {
+      return ob_get_clean();
+    }
 
   }
 
@@ -484,6 +493,10 @@ class EventsCalendarGravityFormsRegistration {
 
     }
     return $form;
+  }
+
+  function short_code_render() {
+    return self::render_registration_form(true);
   }
 
 

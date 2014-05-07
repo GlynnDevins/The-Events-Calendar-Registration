@@ -264,7 +264,7 @@ class EventsCalendarGravityFormsRegistration {
           array(
             'id'          => '1',
             'isRequired'  => '1',
-            'size'        => 'large',
+            'size'        => 'medium',
             'type'        => 'name',
             'nameFormat'  => 'simple',
             'label'       => 'First Name'

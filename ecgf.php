@@ -546,12 +546,11 @@ class ECGF_Widget extends WP_Widget {
 }
 
 
-
-
-add_action( 'widgets_init', function(){
+function ECGF_Widget_init() {
   register_widget( 'ECGF_Widget' );
-});
+}
 
+add_action( 'widgets_init', 'ECGF_Widget_init');
 
 
 

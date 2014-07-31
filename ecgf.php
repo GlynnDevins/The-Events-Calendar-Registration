@@ -3,7 +3,7 @@
  * Plugin Name: The Events Calendar Gravity Forms Registration
  * Plugin URI:
  * Description: This plugin will integrate The Events Calendar and Gravity Forms for Event Registration
- * Version: 1.1
+ * Version: 1.2
  * Author: GlynnDevins
  * Author URI: http://www.glynndevins.com
  * License: GPLv2 or later
@@ -197,7 +197,7 @@ class EventsCalendarGravityFormsRegistration {
 
 
 
-        
+
         echo '<h3>' . get_field('registration_headline') . '</h3>'; // show the registration headline
 
         if (get_field('enable_online_registration')): //check to see if online registration is enabled

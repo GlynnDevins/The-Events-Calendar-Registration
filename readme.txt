@@ -29,9 +29,10 @@ When enabled, this plugin auto generates:
 
 With this plugin enabled, you can easily export the entries on a per event basis by going to the edit events page, and using the Export Entries action when you mouse over the row.
 
-This plugin does require you widgetize your events theme files, if you haven't already made a tribe-events folder in your theme, you will want to follow these directions: http://tri.be/support/documentation/events-calendar-themers-guide/
+To display the events form, you can use the shortcode: `[ecgf_form]`
 
-Once you've copied out the template files you need, you need to add a widget area to them. To learn more about this, please see readme at: https://github.com/GlynnDevins/The-Events-Calendar-Registration
+The registration form will only show on a single event page, this means it will not display on an archive page of events.
+
 
 
 == Installation ==

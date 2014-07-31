@@ -39,5 +39,10 @@ The registration form will only show on a single event page, this means it will 
 
 1. Upload `the-events-calendar-registration` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Enable the form for an event on the event edit page.
-4. Widgetize your events template files, if not already.  For further instructions reference: https://github.com/GlynnDevins/The-Events-Calendar-Registration
+3. Copy and paste shortcode into your event or event's single template: `[ecgf_form]`
+
+== Screenshots ==
+
+1. Add's export functionality to the admin view of all events.
+2. Front end facing form (obviously won't be styled the same as styling is up to you).
+3. Edit event widget, which allows disabling event registration on a per event basis, as well as specifying when event registration will end and the message to be shown when the registration period has ended.
